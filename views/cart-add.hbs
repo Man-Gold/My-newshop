@@ -1,5 +1,8 @@
 {{!< layout}}
 
+{{#contentFor 'style'}}
+<link rel="stylesheet" href="/assets/css/page-cart.css">
+{{/contentFor}}
 
 <div class="success-cart">
     <div class="py-container ">
@@ -8,21 +11,20 @@
       <div class="goods">
         <div class="left-good">
           <div class="left-pic">
-            <img src="uploads/mobile.png">
+            <img src="{{goods.goods_small_logo}}">
           </div>
           <div class="right-info">
-            <p class="title">美的（Midea)电饭煲WFZ5099IH IH电磁加热 1250W大火力 钛金釜5L电饭锅</p>
+            <p class="title">{{goods.goods_name}}</p>
             <p class="attr">颜色：WFZ5099IH/5L钛金釜内胆 数量：1</p>
           </div>
         </div>
         <div class="right-gocart">
-          <a href="item.html" class="sui-btn btn-xlarge">查看商品详情</a>
-          <a href="cart.html" class="sui-btn btn-xlarge btn-danger ">去购物车结算 ></a>
+          <a href="/item/{{goods.goods_id}}" class="sui-btn btn-xlarge">查看商品详情</a>
+          <a href="/cart" class="sui-btn btn-xlarge btn-danger ">去购物车结算 ></a>
         </div>
       </div>
     </div>
   </div>
-
 
 
 

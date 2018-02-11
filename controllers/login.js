@@ -1,10 +1,44 @@
 
 
 const bcrypt = require('bcryptjs')
-const { User } = require('../models')
+const { User, UserCart } = require('../models')
+
+function syncCart (req) {
+  const cookieCartList = req.cookies.cart_List || []
+  if (!cookieCartList.length){
+    return false
+  }
+  UserCart.findOrCreate({
+    where: { user_id: req.session.info.user_id },
+    defaults: {
+      user_id: req.session.info.user_id,
+      cart_info: '[]',
+      created_at: Date.now() / 1000,
+      updated_at: Date.now() / 1000
+    }
+  })
+  .then(([cart, created]) => {
+    let dbCartList
+    try {
+      dbCartList = JSON.parse(cart.cart_info)
+    } catch (e) {
+      dbCartList = []
+    }
+    cookieCartList.forEach(v => {
+      const exists = dbCartList.find(c => v.id === c.id)
+      if (exists) {
+        exists.amount += v.amount
+      }else {
+        dbCartList.push(v)
+      }
+    })
+    cart.cart_info = JSON.stringify(dbCartList)
+    return cart.save()
+  })
+}
 
 exports.login = (req, res) => {
-  res.render('login', {returnurl:req.query.ReturnUrl})
+  res.render('login', {returnurl:req.query.redirect})
 }
 
 let currentUser
@@ -35,6 +69,12 @@ exports.loginPost = (req, res) => {
         const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
         res.cookie('info', { uid: currentUser.user_id, pwd: currentUser.password }, { expires })
       }
+      return syncCart(req)
+      
+    })
+    .then((data) => {
+      res.clearCookie('cart_List')
+      delete req.cookies.cart_List
       if ( returnurl ) {
         res.redirect(returnurl)
       }else {

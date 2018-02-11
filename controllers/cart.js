@@ -55,7 +55,7 @@ exports.cart_add = (req, res, next) => {
       }
 
       if (!req.session.info) {
-      	return res.cookie('cart_list', data, { expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)})
+      	return res.cookie('cart_List', data, { expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)})
       }
 
       return UserCart.update({ cart_info: JSON.stringify(data)}, { where: { user_id: req.session.info.user_id} })

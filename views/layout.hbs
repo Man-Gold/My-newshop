@@ -24,7 +24,7 @@
                 {{#if currentUser}}
                 欢迎{{currentUser.username}}
                 {{else}}
-                请<a href="/account/login">登录</a>
+                请{{{block 'a'}}}登录</a>
                 {{/if}}
                 <span>
                   <a href="/account/register">免费注册</a>

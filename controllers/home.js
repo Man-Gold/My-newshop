@@ -1,4 +1,7 @@
 const { Category, Goods, GoodsPics } = require('../models')
+
+
+
 exports.home = (req, res) => {
   res.render('home')
 }
@@ -39,7 +42,7 @@ exports.list = (req, res, next) => {
 
 exports.item = (req, res, next) => {
   const { goods_id } = req.params
-
+  res.locals.originalUrl = req.originalUrl
   Goods.findOne({ where: { goods_id } })
     .then(goods => {
       if (!goods) throw new Error('这个商品不存在')
