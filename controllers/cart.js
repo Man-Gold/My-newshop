@@ -41,7 +41,7 @@ exports.cart_add = (req, res, next) => {
       res.locals.goods = data
 
       if (!req.session.info) {
-      	return req.cookies.cart_list || []
+      	return req.cookies.cart_List || []
       }
       return getFromDatebase(req.session.info.user_id)
     })
@@ -63,4 +63,8 @@ exports.cart_add = (req, res, next) => {
     .then(() => {
       res.render('cart-add')
     })
+}
+
+exports.cart = (req, res) => {
+  res.render('cart')
 }

@@ -80,10 +80,8 @@ router.use((req, res, next) => {
   })
   .then(data => {
     res.locals.cartList = data
-
     res.locals.cartTotalPrice = data.reduce((prev, next) => prev + next.total, 0)
     res.locals.cartTotalCount = data.reduce((prev, next) => prev + next.amount, 0)
-
     next()
   })
 })
@@ -112,6 +110,8 @@ router.get('/member/order', common.require, member.member_order)
 router.get('/member/address', common.require, member.member_address)
 
 router.get('/cart/add', cart.cart_add)
+
+router.get('/cart', cart.cart)
 
 
 module.exports = router

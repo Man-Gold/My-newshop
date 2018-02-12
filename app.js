@@ -91,6 +91,10 @@ hbs.registerHelper('pagination', function(current, total, opts){
 
       return new hbs.SafeString(result)
 })
+
+hbs.registerHelper('allprice', (price, amount, opts) => {
+  return (price*amount).toFixed(2)
+})
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'hbs')
