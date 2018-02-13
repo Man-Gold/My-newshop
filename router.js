@@ -7,6 +7,7 @@ const { User } = require('./models')
 const member = require('./controllers/member')
 const cart = require('./controllers/cart')
 const { Goods, UserCart } = require('./models')
+const checkout = require('./controllers/checkout')
 
 function getFromDatebase (user_id) {
   return UserCart.findOrCreate({
@@ -110,8 +111,10 @@ router.get('/member/order', common.require, member.member_order)
 router.get('/member/address', common.require, member.member_address)
 
 router.get('/cart/add', cart.cart_add)
-
 router.get('/cart', cart.cart)
+
+router.get('/checkout/create', common.require, checkout.create)
+router.get('/checkout', common.require, checkout.index)
 
 
 module.exports = router
