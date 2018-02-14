@@ -109,6 +109,7 @@ router.get('/member/profile', common.require, member.member_profile)
 router.post('/member/profile', common.require, member.member_profilePost)
 router.get('/member/order', common.require, member.member_order)
 router.get('/member/address', common.require, member.member_address)
+router.post('/member/address-add', common.require, member.addAddress)
 
 router.get('/cart/add', cart.cart_add)
 router.get('/cart', cart.cart)

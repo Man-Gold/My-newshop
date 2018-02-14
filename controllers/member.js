@@ -5,7 +5,7 @@ const path = require('path')
 const util = require('util')
 const multer = require('multer')
 
-const { User } = require('../models')
+const { User, Consignee } = require('../models')
 const upload = multer({ dest: 'public/uploads' })
 
 const rename = util.promisify(fs.rename)
@@ -56,4 +56,25 @@ exports.member_order = (req, res) => {
 
 exports.member_address = (req, res) => {
   res.render('member-address')
+}
+
+exports.addAddress = (req, res, next) => {
+  const { cgn_name, cgn_address, cgn_tel, cgn_code } = req.body
+
+  Consignee.create({
+    user_id: req.session.info.user_id,
+    cgn_name,
+    cgn_address,
+    cgn_tel,
+    cgn_code
+  })
+  .then(() => {
+    return Consignee.findAll({ where: { user_id: req.session.info.user_id } })
+  })
+  .then(data => {
+    res.send({ data })
+  })
+  .catch(e => {
+    res.send({ error: e.message })
+  })
 }

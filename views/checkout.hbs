@@ -134,4 +134,45 @@
 {{#contentFor 'script'}}
   <script src="/assets/js/sui.modal.js"></script>
   <script src="/assets/js/sui.transition.js"></script>
+  <script>
+    $(function($){
+      var $addAddress = $('#add_address')
+      var $addForm = $addAddress.find('form')
+      var $addrDetail = $('.addr-detail')
+
+      var addrTemplate = '<li class="addr-item">\
+            <div class="con name"><a href="#">\{{cgn_name}}</a></div>\
+            <div class="con address">\{{cgn_name}} \{{cgn_address}} <span>\{{cgn_tel}}</span></div>\
+          </li>'
+
+      $('#btn_save').on('click', function(){
+        var formArr = $addForm.serializeArray()
+        console.log(formArr)
+        var isValidated = formArr.every(function(v){
+          return v.value
+        })
+        if (!isValidated) return alert('填写完整信息')
+
+        var params = formArr.reduce(function(obj, next){
+            obj[next.name] = next.value
+            return obj
+        },{})
+
+        $.post('/member/address-add', params, function(data){
+          if (data.error) return alert(data.error)
+
+          $addrDetail.empty()
+
+          data.data.forEach(function(v){
+            var temp = addrTemplate
+            for (var key in v) {
+              temp = temp.replace('\{{' + key + '}}', v[key])
+            }
+            $addrDetail.append(temp)
+          })
+            $addAddress.modal('hide')
+        })
+      })
+    })
+  </script>
 {{/contentFor}}

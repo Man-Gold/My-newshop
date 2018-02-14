@@ -95,6 +95,10 @@ hbs.registerHelper('pagination', function(current, total, opts){
 hbs.registerHelper('allprice', (price, amount, opts) => {
   return (price*amount).toFixed(2)
 })
+
+hbs.registerHelper('mobileMask', function (input, opts) {
+  return input.replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2')
+})
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'hbs')
