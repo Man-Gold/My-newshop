@@ -6,20 +6,16 @@ const utils = require('../utils')
 const { User } = require('../models')
 const uuid = require('uuid')
 
-
 exports.register = (req, res) => {
   res.render('register')
 }
 
-
-
 exports.registerPost = (req, res) => {
-	const {username, email, password, confirm, agree} = req.body
+  const {username, email, password, confirm, agree} = req.body
 
   res.locals.username = username
   res.locals.email = email
 
-  
   if (!(username && password && email && confirm)) {
   	return res.render('register', {msg: '请输入完整信息'})
   }
@@ -49,12 +45,10 @@ exports.registerPost = (req, res) => {
       user.create_time = Date.now() / 1000
       user.update_time = Date.now() / 1000
 
-
-      const code = uuid().slice(0,8)
+      const code = uuid().slice(0, 8)
       user.user_email_code = code
       // console.log(code.slice(0,8))
       return user.save()
-
     })
     .then(data => {
     	if (!data.user_id) throw new Error('注册失败')
@@ -70,7 +64,6 @@ exports.registerPost = (req, res) => {
     })
 }
 
-
 exports.active = (req, res, next) => {
   const { code } = req.query
   User.findOne({ where: { user_email_code: code } })
@@ -80,13 +73,12 @@ exports.active = (req, res, next) => {
         err.status = 404
         return next(err)
       }
-      
+
       data.is_active = '是'
 
       data.user_email_code = ''
 
       return data.save()
-
     })
     .then(user => {
       res.redirect('/admin/home')

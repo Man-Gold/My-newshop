@@ -17,11 +17,8 @@
  * limitations under the License.
  * ========================================================== */
 
-
-!function ($) {
-
-  "use strict";
-
+!(function ($) {
+  'use strict'
 
  /* CAROUSEL CLASS DEFINITION
   * ========================= */
@@ -39,22 +36,22 @@
 
     cycle: function (e) {
       if (!e) this.paused = false
-      if (this.interval) clearInterval(this.interval);
-      this.options.interval
-        && !this.paused
-        && (this.interval = setInterval($.proxy(this.next, this), this.options.interval))
+      if (this.interval) clearInterval(this.interval)
+      this.options.interval &&
+        !this.paused &&
+        (this.interval = setInterval($.proxy(this.next, this), this.options.interval))
       return this
-    }
+    },
 
-  , getActiveIndex: function () {
+    getActiveIndex: function () {
       this.$active = this.$element.find('.item.active')
       this.$items = this.$active.parent().children()
       return this.$items.index(this.$active)
-    }
+    },
 
-  , to: function (pos) {
-      var activeIndex = this.getActiveIndex()
-        , that = this
+    to: function (pos) {
+      var activeIndex = this.getActiveIndex(),
+        that = this
 
       if (pos > (this.$items.length - 1) || pos < 0) return
 
@@ -69,9 +66,9 @@
       }
 
       return this.slide(pos > activeIndex ? 'next' : 'prev', $(this.$items[pos]))
-    }
+    },
 
-  , pause: function (e) {
+    pause: function (e) {
       if (!e) this.paused = true
       if (this.$element.find('.next, .prev').length && $.support.transition.end) {
         this.$element.trigger($.support.transition.end)
@@ -80,26 +77,26 @@
       clearInterval(this.interval)
       this.interval = null
       return this
-    }
+    },
 
-  , next: function () {
+    next: function () {
       if (this.sliding) return
       return this.slide('next')
-    }
+    },
 
-  , prev: function () {
+    prev: function () {
       if (this.sliding) return
       return this.slide('prev')
-    }
+    },
 
-  , slide: function (type, next) {
-      var $active = this.$element.find('.item.active')
-        , $next = next || $active[type]()
-        , isCycling = this.interval
-        , direction = type == 'next' ? 'left' : 'right'
-        , fallback  = type == 'next' ? 'first' : 'last'
-        , that = this
-        , e
+    slide: function (type, next) {
+      var $active = this.$element.find('.item.active'),
+        $next = next || $active[type](),
+        isCycling = this.interval,
+        direction = type == 'next' ? 'left' : 'right',
+        fallback = type == 'next' ? 'first' : 'last',
+        that = this,
+        e
 
       this.sliding = true
 
@@ -108,8 +105,8 @@
       $next = $next.length ? $next : this.$element.find('.item')[fallback]()
 
       e = $.Event('slide', {
-        relatedTarget: $next[0]
-      , direction: direction
+        relatedTarget: $next[0],
+        direction: direction
       })
 
       if ($next.hasClass('active')) return
@@ -151,7 +148,6 @@
 
   }
 
-
  /* CAROUSEL PLUGIN DEFINITION
   * ========================== */
 
@@ -159,25 +155,24 @@
 
   $.fn.carousel = function (option) {
     return this.each(function () {
-      var $this = $(this)
-        , data = $this.data('carousel')
-        , options = $.extend({}, $.fn.carousel.defaults, $this.data(), typeof option == 'object' && option)
-        , action = typeof option == 'string' ? option : options.slide
+      var $this = $(this),
+        data = $this.data('carousel'),
+        options = $.extend({}, $.fn.carousel.defaults, $this.data(), typeof option === 'object' && option),
+        action = typeof option === 'string' ? option : options.slide
       if (!data) $this.data('carousel', (data = new Carousel(this, options)))
-      if (typeof option == 'number') data.to(option)
+      if (typeof option === 'number') data.to(option)
       else if (action) data[action]()
       else if (options.autoStart) data.pause().cycle()
     })
   }
 
   $.fn.carousel.defaults = {
-    interval: 5000
-  , pause: 'hover'
-  , autoStart: true
+    interval: 5000,
+    pause: 'hover',
+    autoStart: true
   }
 
   $.fn.carousel.Constructor = Carousel
-
 
  /* CAROUSEL NO CONFLICT
   * ==================== */
@@ -191,10 +186,10 @@
   * ================= */
 
   $(document).on('click.sui-carousel.data-api', '[data-slide], [data-slide-to]', function (e) {
-    var $this = $(this), href
-      , $target = $($this.attr('data-target') || (href = $this.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '')) //strip for ie7
-      , options = $.extend({}, $target.data(), $this.data())
-      , slideIndex
+    var $this = $(this), href,
+      $target = $($this.attr('data-target') || (href = $this.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '')), // strip for ie7
+      options = $.extend({}, $target.data(), $this.data()),
+      slideIndex
 
     $target.carousel(options)
 
@@ -205,8 +200,7 @@
     e.preventDefault()
   })
 
-  $(function() {
-    $("[data-ride='carousel']").carousel();
-  });
-
-}(window.jQuery);
+  $(function () {
+    $("[data-ride='carousel']").carousel()
+  })
+}(window.jQuery))

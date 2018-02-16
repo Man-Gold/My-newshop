@@ -19,7 +19,7 @@ const sequelize = new Sequelize({
 
 glob.sync('*.js', { cwd: __dirname })
   .filter(item => item !== 'index.js')
-  .forEach(item  => {
+  .forEach(item => {
     const model = sequelize.import(path.join(__dirname, item))
     exports[model.name] = model
   })

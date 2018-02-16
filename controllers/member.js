@@ -1,5 +1,4 @@
 
-
 const fs = require('fs')
 const path = require('path')
 const util = require('util')
@@ -10,7 +9,6 @@ const upload = multer({ dest: 'public/uploads' })
 
 const rename = util.promisify(fs.rename)
 
-
 exports.member = (req, res) => {
   res.render('member')
 }
@@ -18,7 +16,6 @@ exports.member = (req, res) => {
 exports.member_profile = (req, res) => {
   res.render('member-profile')
 }
-
 
 exports.member_profilePost = [upload.single('avatar'), (req, res) => {
   const { user_sex, user_qq, user_tel, user_xueli, user_hobby, user_introduce } = req.body
@@ -44,15 +41,13 @@ exports.member_profilePost = [upload.single('avatar'), (req, res) => {
       res.render('member-profile')
     })
     .catch(e => {
-      res.render('member-profile', { msg:'更新失败'} )
+      res.render('member-profile', { msg: '更新失败'})
     })
 }]
-
 
 exports.member_order = (req, res) => {
   res.render('member-order')
 }
-
 
 exports.member_address = (req, res) => {
   res.render('member-address')

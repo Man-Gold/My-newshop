@@ -8,10 +8,7 @@ exports.captcha = (req, res) => {
 
   res.type('svg')
   res.send(svg.data)
-  
 }
-
-
 
 exports.require = (req, res, next) => {
   if (req.session.info) return next()

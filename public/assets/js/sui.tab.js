@@ -17,11 +17,8 @@
  * limitations under the License.
  * ======================================================== */
 
-
-!function ($) {
-
-  "use strict";
-
+!(function ($) {
+  'use strict'
 
  /* TAB CLASS DEFINITION
   * ==================== */
@@ -32,22 +29,22 @@
 
   Tab.prototype = {
 
-    constructor: Tab
+    constructor: Tab,
 
-  , show: function () {
-      var $this = this.element
-        , $ul = $this.closest('ul:not(.dropdown-menu)')
-        , selector = $this.attr('data-target')
-        , previous
-        , $target
-        , e
+    show: function () {
+      var $this = this.element,
+        $ul = $this.closest('ul:not(.dropdown-menu)'),
+        selector = $this.attr('data-target'),
+        previous,
+        $target,
+        e
 
       if (!selector) {
         selector = $this.attr('href')
-        selector = selector && selector.replace(/.*(?=#[^\s]*$)/, '') //strip for ie7
+        selector = selector && selector.replace(/.*(?=#[^\s]*$)/, '') // strip for ie7
       }
 
-      if ( $this.parent('li').hasClass('active') ) return
+      if ($this.parent('li').hasClass('active')) return
 
       previous = $ul.find('.active:last a')[0]
 
@@ -64,19 +61,19 @@
       this.activate($this.parent('li'), $ul)
       this.activate($target, $target.parent(), function () {
         $this.trigger({
-          type: 'shown'
-        , relatedTarget: previous
+          type: 'shown',
+          relatedTarget: previous
         })
       })
-    }
+    },
 
-  , activate: function ( element, container, callback) {
-      var $active = container.find('> .active')
-        , transition = callback
-            && $.support.transition
-            && $active.hasClass('fade')
+    activate: function (element, container, callback) {
+      var $active = container.find('> .active'),
+        transition = callback &&
+            $.support.transition &&
+            $active.hasClass('fade')
 
-      function next() {
+      function next () {
         $active
           .removeClass('active')
           .find('> .dropdown-menu > .active')
@@ -91,38 +88,36 @@
           element.removeClass('fade')
         }
 
-        if ( element.parent('.dropdown-menu') ) {
+        if (element.parent('.dropdown-menu')) {
           element.closest('li.dropdown').addClass('active')
         }
 
         callback && callback()
       }
 
-      transition ?
-        $active.one($.support.transition.end, next) :
-        next()
+      transition
+        ? $active.one($.support.transition.end, next)
+        : next()
 
       $active.removeClass('in')
     }
   }
-
 
  /* TAB PLUGIN DEFINITION
   * ===================== */
 
   var old = $.fn.tab
 
-  $.fn.tab = function ( option ) {
+  $.fn.tab = function (option) {
     return this.each(function () {
-      var $this = $(this)
-        , data = $this.data('tab')
+      var $this = $(this),
+        data = $this.data('tab')
       if (!data) $this.data('tab', (data = new Tab(this)))
-      if (typeof option == 'string') data[option]()
+      if (typeof option === 'string') data[option]()
     })
   }
 
   $.fn.tab.Constructor = Tab
-
 
  /* TAB NO CONFLICT
   * =============== */
@@ -132,7 +127,6 @@
     return this
   }
 
-
  /* TAB DATA-API
   * ============ */
 
@@ -140,5 +134,4 @@
     e.preventDefault()
     $(this).tab('show')
   })
-
-}(window.jQuery);
+}(window.jQuery))

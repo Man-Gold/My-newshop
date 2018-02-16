@@ -1,7 +1,5 @@
 const { Category, Goods, GoodsPics } = require('../models')
 
-
-
 exports.home = (req, res) => {
   res.render('home')
 }

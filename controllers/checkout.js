@@ -1,10 +1,7 @@
 
-
 const { Goods, UserCart, Order, OrderGoods, Consignee } = require('../models')
 
-
-
-function getOrderNumber(){
+function getOrderNumber () {
   return Date.now() + Math.random().toString().substr(-5)
 }
 
@@ -13,7 +10,7 @@ exports.create = (req, res, next) => {
   const orderNumber = getOrderNumber()
   Promise.resolve()
     .then(() => {
-      if(!cartList.length) throw new Error('购物车为空')
+      if (!cartList.length) throw new Error('购物车为空')
 
       return Order.create({
       	user_id: req.session.info.user_id,
@@ -56,13 +53,13 @@ exports.index = (req, res, next) => {
 
   Promise.resolve()
   .then(() => {
-  	if(!num) throw new Error('订单异常')
+  	if (!num) throw new Error('订单异常')
   	return Order.findOne({ where: { order_number: num } })
   })
   .then(data => {
-  	if(!data) throw new Error('订单异常')
+  	if (!data) throw new Error('订单异常')
   		res.locals.order = data
-  	return OrderGoods.findAll({ where: { order_id : data.order_id}})
+  	return OrderGoods.findAll({ where: { order_id: data.order_id}})
   })
   .then(data => {
   	const tasks = data.map(v => {
@@ -70,9 +67,9 @@ exports.index = (req, res, next) => {
   	    .then(goodsdata => {
   	    	return {
   	    	  image: goodsdata.goods_small_logo,
-              name: goodsdata.goods_name,
-              price: v.goods_price,
-              amount: v.goods_number
+        name: goodsdata.goods_name,
+        price: v.goods_price,
+        amount: v.goods_number
   	    	}
   	    })
   	})

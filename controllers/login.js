@@ -1,11 +1,10 @@
 
-
 const bcrypt = require('bcryptjs')
 const { User, UserCart } = require('../models')
 
 function syncCart (req) {
   const cookieCartList = req.cookies.cart_List || []
-  if (!cookieCartList.length){
+  if (!cookieCartList.length) {
     return false
   }
   UserCart.findOrCreate({
@@ -28,7 +27,7 @@ function syncCart (req) {
       const exists = dbCartList.find(c => v.id === c.id)
       if (exists) {
         exists.amount += v.amount
-      }else {
+      } else {
         dbCartList.push(v)
       }
     })
@@ -38,7 +37,7 @@ function syncCart (req) {
 }
 
 exports.login = (req, res) => {
-  res.render('login', {returnurl:req.query.redirect})
+  res.render('login', {returnurl: req.query.redirect})
 }
 
 let currentUser
@@ -54,7 +53,7 @@ exports.loginPost = (req, res) => {
   }
 
   const whereProp = info.includes('@') ? 'user_email' : 'username'
-  User.findOne({ where: { [whereProp] : info } })
+  User.findOne({ where: { [whereProp]: info } })
     .then(data => {
     	if (!data) throw new Error('用户名或邮箱不存在')
 		  currentUser = data
@@ -65,19 +64,17 @@ exports.loginPost = (req, res) => {
       req.session.info = currentUser
       res.locals.currentUser = currentUser
       if (rember) {
-      
         const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
         res.cookie('info', { uid: currentUser.user_id, pwd: currentUser.password }, { expires })
       }
       return syncCart(req)
-      
     })
     .then((data) => {
       res.clearCookie('cart_List')
       delete req.cookies.cart_List
-      if ( returnurl ) {
+      if (returnurl) {
         res.redirect(returnurl)
-      }else {
+      } else {
         res.render('member')
       }
     })

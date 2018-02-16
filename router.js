@@ -30,14 +30,13 @@ function getFromDatebase (user_id) {
   })
 }
 
-
 const router = new Router()
 
 router.use((req, res, next) => {
-	if (!req.session.info) {
-      if (req.cookies.info) {
+  if (!req.session.info) {
+    if (req.cookies.info) {
       	const {uid, pwd} = req.cookies.info
-        User.findOne({where: { user_id: uid } })
+      User.findOne({where: { user_id: uid } })
           .then(data => {
           	if (data.password !== pwd) throw new Error()
           	req.session.info = data
@@ -50,10 +49,10 @@ router.use((req, res, next) => {
 	  } else {
 	  	next()
 	  }
-	} else {
+  } else {
     res.locals.currentUser = req.session.info
 	  next()
-	}
+  }
 })
 
 router.use((req, res, next) => {
@@ -87,7 +86,6 @@ router.use((req, res, next) => {
   })
 })
 
-
 router.get('/home', ho.home)
 
 router.get('/list/:cat_id(\\d+)', ho.list)
@@ -116,6 +114,5 @@ router.get('/cart', cart.cart)
 
 router.get('/checkout/create', common.require, checkout.create)
 router.get('/checkout', common.require, checkout.index)
-
 
 module.exports = router
