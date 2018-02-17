@@ -69,7 +69,7 @@ exports.loginPost = (req, res) => {
       }
       return syncCart(req)
     })
-    .then((data) => {
+    .then(data => {
       res.clearCookie('cart_List')
       delete req.cookies.cart_List
       if (returnurl) {
