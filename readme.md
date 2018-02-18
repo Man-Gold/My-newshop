@@ -106,6 +106,88 @@ exports.captcha = (req, res) => {
 
 5.如果存在returnurl，则重定向到该地址
 
+#### 自动登录中间件
+
+需求：如果用户登录时点击了自动登录，下次访问时我们要用cookie中的信息为用户登录
+
+实现：
+
+1.因为用户下次可能访问任何页面，所以该操作需要放置在中间件里，每个请求都需要经过
+
+2.如果当前用户没有登录，判断请求的cookie中有没有info，没有就next，如果有就取出cookie中信息，为用户登录，再next
+
+#### 模板公用部分提取
+
+需求：因为多个页面只有版心部分不同，所以可以提取出公共部分便于维护，并且我们需要动态获取侧边栏的商品分类列表
+
+实现：
+
+1.将公共部分提取到 layout.hbs中，在每个用到的文件中，通过{{!<  layout}}将该页内容导出
+
+2.将每个不同的版心中，共同的部分提取出来，放置到partials文件夹下，并补全模板配置，将提取出来的内容在需要的文件中通过{{> 文件名}}导入
+
+3.编写‘categories ’ helper，在模板渲染的时候来获取商品分类列表，由于数据在数据库中是并列存放的，我们需要根据cart_id和cart_pid来判断信息的归属关系，并且需要一个三级的数组结构来遍历，因此使用递归，代码如下：
+
+```js
+      var fun = function (level) {
+        return data.filter(v => {
+          return v.cat_pid === level
+        })
+        .map(v => {
+          v.children = fun(v.cat_id)
+          return v
+        })
+      }
+```
+
+#### 分类商品展示
+
+需求：点击不同的商品分类，需要展示当前分类下商品，并且需要分页展示
+
+实现：
+
+1.使用req.originalUrl取出当前请求url地址，并绑定到locals上面
+
+2.先根据url参数中的的cat_id在Category中查找该分类为几级分类
+
+3.根据url中的page(默认为1)，sort(默认为时间),和查找出来的几级分类在Goods表中取出相应数据,
+
+默认一次取出5条数据，offset为(page - 1)*5
+
+4.再查找当前分类下共多条数据，计算出总页数
+
+5.编写‘pagination’，helper来实现分页功能,逻辑如下：
+
+> 1.不同页数的请求地址，只是page参数不同，其他一样，所以在helper中通过this取出locals中的originalUrl，并使用内置的url模块进行解析(url.parse)，解析后成为一个地址对象，page在对象的query属性中，通过更改query中的page，*必须要删除掉地址对象中的search属性，再使用url.format生成一个新的地址
+>
+> ```js
+>   const urlObj = url.parse(this.originalUrl, true)
+>
+>   function getPage (page) {
+>     urlObj.query.page = page
+>     delete urlObj.search
+>     return url.format(urlObj)
+>   }
+> ```
+>
+> 2.默认下面显示5个页码，并且根据当前页码动态改变
+>
+> ```js
+>   const visibles = 5
+>   const regin = Math.floor(visibles / 2)
+>   //start为起始页码
+>   let start = current - regin
+>   start = start < 1 ? 1 : start
+>   //end为结束页码
+>   let end = start + visibles - 1
+>   end = end > total ? total : end
+>
+>   start = end - visibles + 1
+>   start = start < 1 ? 1 : start
+> ```
+>
+> 3.分页部分的结构通过拼接字符串，使用 return new hbs.SafeString(字符串)将字符串返回给模板解析
+
 
 
 #### 登陆后购物车信息同步到数据库
