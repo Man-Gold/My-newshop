@@ -212,6 +212,19 @@ exports.captcha = (req, res) => {
 
 3.遍历cookiecartlist，若dbcartlist中存在同样商品，则数量相加，反之添加整个元素
 
+```js
+    cookieCartList.forEach(v => {
+      const exists = dbCartList.find(c => v.id === c.id)
+      if (exists) {
+        exists.amount += v.amount
+      } else {
+        dbCartList.push(v)
+      }
+    })
+```
+
+
+
 #### 购物车结算页面
 
 需求：在购物车结算页面展示购物车中所有商品（登录前cookie中cart_List里或者登陆后数据库里的信息）
