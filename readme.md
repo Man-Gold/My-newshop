@@ -200,6 +200,57 @@ exports.captcha = (req, res) => {
 
 3.根据商品数据中的不同分类级别的id，在Category表中查找出每个分类级别名称
 
+#### 个人信息页
+
+需求：该页面展示用户个人信息，并且提供更改功能，包括头像上传，form表单域信息提交，文本域
+
+实现：
+
+> 1.将form添加属性`enctype="multipart/form-data"` ,input标签的type属性为file，并且添加change事件
+>
+> 2.使用FileReader构造函数来实现图片预览
+>
+> ```js
+> $(function($){
+>     $('#avatar').on('change', function(){
+>       var $this = $(this)
+>       取到上传的第一个文件对象
+>       var file = $(this).prop('files')[0]
+>       var reader = new FileReader()
+>       reader.readAsDataURL(file)
+> 	 
+>       reader.onload = function () {
+>          $this.prev().fadeOut(function () {
+>            $(this).attr('src', reader.result).fadeIn()
+>          })
+>        }
+>     })
+>   })
+> ```
+>
+> 3.表单信息提交，使用fs模块的fs.rename来改变文件地址
+>
+> 4.使用util模块将异步的fs.rename变成promise模式
+>
+> 5.使用multer模块来处理表单文件
+>
+> > 1.配置multer
+> >
+> > ```js
+> > dest为文件保存位置，如果不写则文件将保存在内存中，永远不会写入磁盘。
+> > upload = multer({ dest: 'public/uploads' })
+> >
+> >
+> > upload.single('avatar')
+> > 接受带有名称的单个文件fieldname。单个文件将被存储在req.file。
+> > ```
+>
+> 6.根据id查找用户信息，取出表单提交数据，使用Object.assign来合并两个对象，并重新持久化
+>
+> 7.将session里面和locals里面的用户信息更新
+
+
+
 #### 登陆后购物车信息同步到数据库
 
 需求：登录前的购物车信息存储在cookie中的cart_List里，登陆后的购物车信息存储在数据库的user_cart表中，在用户登陆后，需要将cookie中的信息存储在数据库中

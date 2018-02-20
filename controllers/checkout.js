@@ -67,9 +67,9 @@ exports.index = (req, res, next) => {
   	    .then(goodsdata => {
   	    	return {
   	    	  image: goodsdata.goods_small_logo,
-        name: goodsdata.goods_name,
-        price: v.goods_price,
-        amount: v.goods_number
+            name: goodsdata.goods_name,
+            price: v.goods_price,
+            amount: v.goods_number
   	    	}
   	    })
   	})
