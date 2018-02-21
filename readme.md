@@ -249,7 +249,68 @@ exports.captcha = (req, res) => {
 >
 > 7.将session里面和locals里面的用户信息更新
 
+#### 添加商品到购物车
 
+需求：点击添加到购物车，将选中商品数量和id存入cookie中(登录前)或者数据库中(登陆后)，并跳转到提示信息页
+
+实现：
+
+1.根据商品id在goods表中查询出商品信息
+
+2.取出cookie中购物车信息或者数据库中购物车信息
+
+3.遍历购物车信息数组，种类相同则amount相加，否则添加新数组项
+
+4.封装一个函数，用来从数据库中取出购物车信息
+
+```js
+function getFromDatebase (user_id) {
+  如果数据库中没有购物车信息，则创建一个
+  return UserCart.findOrCreate({
+    where: { user_id },
+    defaults: {
+      user_id: user_id,
+      cart_info: '[]',
+      created_at: Date.now() / 1000,
+      updated_at: Date.now() / 1000
+    }
+  })
+  返回的数据是一个数组，第一个元素是数据，第二个元素true为创建出来的数据，false为查询出来的数据
+  .then(([ cart, created ]) => {
+  	let cartList = []
+  	try {
+      如果是创建出来的数据，cart.cart_info为空，json.parse会报错
+  	  cartList = JSON.parse(cart.cart_info)
+  	} catch (e) {
+  	  cartList = []
+  	}
+  	return cartList
+  })
+}
+```
+
+5.将新的购物车信息数组存入cookie中或者数据库中
+
+#### 中间件来查询出购物车商品信息
+
+需求：因为页面侧边需要展示购物车信息，所以我们需要一个中间件来查询出来购物车的一些信息
+
+实现：
+
+1.Promise.resolve()开启一个promise链
+
+2.取出cookie中或者数据库中购物车信息
+
+3.promise.all来同时一起回调多个商品信息查找的异步操作
+
+4.将商品信息绑定到locals
+
+5.计算出商品总价和总数量
+
+```js
+res.locals.cartTotalPrice = data.reduce((prev, next) => prev + next.total, 0)
+res.locals.cartTotalCount = data.reduce((prev, next) => prev + next.amount, 0)
+```
 
 #### 登陆后购物车信息同步到数据库
 

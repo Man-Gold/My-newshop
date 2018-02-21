@@ -12,6 +12,7 @@ function getFromDatebase (user_id) {
     }
   })
   .then(([ cart, created ]) => {
+    console.log(created)
   	let cartList = []
   	try {
   	  cartList = JSON.parse(cart.cart_info)
@@ -26,13 +27,11 @@ exports.cart_add = (req, res, next) => {
   let { goods_id, amount = 1 } = req.query
   goods_id = ~~goods_id
   amount = ~~amount
-
   if (!goods_id) {
   	const err = new Error('没有这商品')
   	err.status = 404
   	next(err)
   }
-
   Goods.findOne({ where: { goods_id }})
     .then(data => {
       if (!data) throw new Error('商品不存在')
