@@ -29,6 +29,7 @@ const sequelize = new Sequelize({
   username: 'root',
   password: '199619',
   logging: false,
+  配置该选项，关闭创建时间和修改时间列的创建
   define: {
     timestamps: false
   }
